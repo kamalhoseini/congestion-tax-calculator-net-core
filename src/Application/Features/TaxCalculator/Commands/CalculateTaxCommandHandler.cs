@@ -1,5 +1,5 @@
 ﻿using Application.Common.Interfaces;
-using Domain.Entities;
+using Domain.Common;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,9 +17,11 @@ namespace Application.Features.TaxCalculator.Commands
 
         public async Task<decimal> Handle(CalculateTaxCommand request, CancellationToken cancellationToken)
         {
-            var vehicle = new Car { Name = request.Vehicle };
+            VehicleFactory factory = new ConcreteVehicleFactory();
 
-           return await _taxCalculatorService.GetTax(vehicle, request.Dates, request.CityName);
+            IVehicle vehicle = factory.GetVehicle(request.VehicleType);
+
+            return await _taxCalculatorService.GetTax(vehicle, request.Dates, request.CityName);
         }
     }
 }

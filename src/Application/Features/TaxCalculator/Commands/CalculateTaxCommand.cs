@@ -9,7 +9,7 @@ namespace Application.Features.TaxCalculator.Commands
         {
                 
         }
-        public string Vehicle { get; set; }
+        public string VehicleType { get; set; }
         public DateTime[] Dates { get; set; }
         public string CityName { get; set; }
 

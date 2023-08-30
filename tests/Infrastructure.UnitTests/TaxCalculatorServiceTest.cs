@@ -33,9 +33,14 @@ namespace Infrastructure.UnitTests
 
         [Theory]
         [MemberData(nameof(FakeData))]
-        public async Task CalculateDiscount_ShouldbeReturnValidResult((Car vehicle, DateTime[] dates, string cityName, decimal validResult) data)
+        public async Task CalculateDiscount_ShouldbeReturnValidResult((string vehicleType, DateTime[] dates, string cityName, decimal validResult) data)
         {
             // Arrange
+
+            VehicleFactory factory = new ConcreteVehicleFactory();
+
+            IVehicle vehicle = factory.GetVehicle(data.vehicleType);
+
             var cityId = FakeCity().Id;
 
             _cityRepository.Setup(c => c.GetCityAsync(It.IsAny<string>()))
@@ -56,7 +61,7 @@ namespace Infrastructure.UnitTests
                                                    _taxAmountRepository.Object);
 
             // Act
-            var result = await service.GetTax(data.vehicle, data.dates, data.cityName);
+            var result = await service.GetTax(vehicle, data.dates, data.cityName);
 
             // Assert
             Assert.Equal(data.validResult, result);
@@ -136,7 +141,7 @@ namespace Infrastructure.UnitTests
                 {
                          new object[] {
                              (
-                                 new Car{Name = "Car"},
+                                 "Car",
                                  new DateTime[] {
                                       new DateTime(2013, 01, 14, 21, 00, 00),
                                       new DateTime(2013, 01, 15, 21, 00, 00),
